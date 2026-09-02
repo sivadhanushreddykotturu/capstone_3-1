@@ -1,0 +1,9 @@
+node_modules/
+.next/
+.env
+config.js
+
+# local-only files (not part of the project source)
+/index.html
+/Self_Learning_Project_Documentation.pdf
+web/AGENTS.md
