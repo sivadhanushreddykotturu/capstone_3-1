@@ -1,0 +1,37 @@
+# Render Blueprint: two web services from one repo (API + web).
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo. See README.md for the order of steps.
+services:
+  - type: web
+    name: triage-api
+    runtime: node
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: GITHUB_TOKEN
+        sync: false          # paste in the dashboard; never commit it
+      - key: KEEP_ALIVE
+        value: "true"        # self-ping /api/health so the free service doesn't sleep
+      - key: KEEP_ALIVE_UNTIL
+        value: "2026-11-08"  # stop pinging after this date to save free instance-hours; edit or delete as needed
+
+  - type: web
+    name: triage-web
+    runtime: node
+    plan: free
+    rootDir: web
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: API_URL
+        sync: false          # the triage-api public URL, e.g. https://triage-api.onrender.com (needed at build time)
+      - key: KEEP_ALIVE
+        value: "true"        # pings its own URL and the API's /api/health
+      - key: KEEP_ALIVE_UNTIL
+        value: "2026-11-08"
