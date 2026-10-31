@@ -1,5 +1,3 @@
-// Risk scoring: separates behaviour-changing / security-relevant updates from inert ones.
-
 const SEC = /\b(security|cve-\d{4}-\d+|ghsa-[\w-]+|vulnerab\w*|exploit|redos|prototype pollution|xss|csrf|rce|injection|advisory)\b/i;
 const BRK = /\b(breaking|removed?|drop(ped|s)?|deprecat\w+|no longer|incompatible|migration)\b/i;
 const DEV = /(\bdev\b|eslint|prettier|jest|mocha|@types\/|types-|test|lint|webpack-cli|babel)/i;
@@ -13,7 +11,6 @@ export const ACTIONS = {
   Safe: "Low risk — merge together as one batch.",
 };
 
-// Strip bot boilerplate, links and HTML so words inside URLs ("code-security") don't count.
 function clean(body) {
   return (body || "")
     .split(/Dependabot will resolve any conflicts|Dependabot commands and options|<details>\s*<summary>\s*Dependabot/i)[0]
@@ -72,7 +69,6 @@ export function scorePR(pr) {
   };
 }
 
-// Compare our risk-ranked queue with a plain oldest-first queue (the baseline).
 export function buildReport(label, prs) {
   const items = prs.map(scorePR);
   const fifo = [...items].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));

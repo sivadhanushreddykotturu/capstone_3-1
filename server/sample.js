@@ -1,4 +1,3 @@
-// Offline sample data so the demo never depends on GitHub or the network.
 const rows = [
   ["Bump prettier from 2.8.0 to 2.8.1", "Patch release. Formatting fixes only."],
   ["Bump lodash from 4.17.15 to 4.17.21", "Security: fixes prototype pollution CVE-2021-23337 (GHSA-35jh-r3h4-6jhm). Severity: high."],

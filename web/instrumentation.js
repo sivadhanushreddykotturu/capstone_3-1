@@ -1,5 +1,3 @@
-// Runs once when the Next.js server starts. Used only to keep free Render services awake (off unless KEEP_ALIVE=true).
-// Pings this site's own public URL plus the API's health endpoint, so one running service keeps both warm.
 export async function register() {
   if (process.env.NEXT_RUNTIME !== "nodejs" || process.env.KEEP_ALIVE !== "true") return;
 

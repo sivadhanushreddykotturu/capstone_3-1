@@ -5,10 +5,9 @@ import { samplePRs } from "./sample.js";
 import { startKeepAlive } from "./keepalive.js";
 
 const app = express();
-app.set("trust proxy", 1); // behind Render's proxy, so req.ip is the real client
+app.set("trust proxy", 1);
 app.use(cors());
 
-// Small per-IP limit so a public URL can't be used to drain the GitHub token's search quota.
 const LIMIT = 20;
 const WINDOW_MS = 60 * 1000;
 const hits = new Map();
@@ -29,7 +28,6 @@ function parseRepo(url = "") {
   return { owner: m[1], repo: m[2].replace(/\.git$/, "") };
 }
 
-// Cache results for 10 min so repeat analyses (e.g. during a demo) don't spend GitHub's search quota.
 const CACHE_MS = 10 * 60 * 1000;
 const cache = new Map();
 
@@ -42,7 +40,7 @@ async function fetchBotPRs({ owner, repo }) {
     cache.set(key, { at: Date.now(), prs });
     return prs;
   } catch (e) {
-    if (hit) return hit.prs; // stale data beats an error in a live demo
+    if (hit) return hit.prs;
     throw e;
   }
 }
@@ -51,7 +49,6 @@ async function fetchBotPRsFromGitHub({ owner, repo }) {
   const headers = { Accept: "application/vnd.github+json", "User-Agent": "triage-demo" };
   if (TOKEN) headers.Authorization = `Bearer ${TOKEN}`;
 
-  // GitHub's search occasionally answers 422 to the combined query; retry with each bot on its own.
   const variants = ["author:app/dependabot author:app/renovate", "author:app/dependabot", "author:app/renovate"];
   let res;
   for (const authors of variants) {
