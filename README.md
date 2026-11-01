@@ -16,15 +16,21 @@ cd web && npm install && npm run dev               # http://localhost:3000
 
 ## Deploy on Render
 
-1. Put this folder in a GitHub repo (`.env` is git-ignored, so the token stays out of it).
-2. Render dashboard -> **New -> Blueprint** -> select the repo. It creates `triage-api` and `triage-web` from `render.yaml`.
-3. Open `triage-api` -> **Environment** -> set `GITHUB_TOKEN`. Wait for the deploy, then copy its URL (`https://triage-api-xxxx.onrender.com`) and check `/api/health` returns `{"ok":true,"tokenConfigured":true}`.
-4. Open `triage-web` -> **Environment** -> set `API_URL` to that URL -> **Manual Deploy**. `API_URL` is read at build time, so it must be set before the build.
-5. Open the `triage-web` URL and press **Sample data**, then analyse a repo.
+The whole app runs as one Render web service: `start.js` launches the Express API on an internal port and Next.js on Render's public
+port, and Next proxies `/api/*` to Express.
 
-### Keeping the free services awake
+| Setting | Value |
+|---|---|
+| Root Directory | (leave empty) |
+| Build Command | `npm run build` |
+| Start Command | `npm start` |
+| Health Check Path | `/api/health` |
+| Environment | `GITHUB_TOKEN`, `NODE_VERSION=22`, `KEEP_ALIVE=true`, `KEEP_ALIVE_UNTIL=2026-11-08` |
 
-Free Render services sleep after about 15 minutes without traffic. With `KEEP_ALIVE=true` each service pings its public URL every 8 minutes
-(the web service also pings the API's `/api/health`), which counts as traffic. The pinger stops itself after `KEEP_ALIVE_UNTIL`, because
-free services draw on a limited monthly pool of instance-hours and two always-on services use it up quickly. Remove the variable or set
-`KEEP_ALIVE=false` to turn it off.
+`render.yaml` holds the same settings, so **New -> Blueprint** also works. `.env` is git-ignored, so set `GITHUB_TOKEN` in the Render dashboard.
+
+### Keeping the free service awake
+
+Free Render services sleep after about 15 minutes without traffic. With `KEEP_ALIVE=true` the service pings its own public URL every 8 minutes,
+which counts as traffic. The pinger stops itself after `KEEP_ALIVE_UNTIL`, because free services draw on a limited monthly pool of
+instance-hours. Remove the variable or set `KEEP_ALIVE=false` to turn it off.

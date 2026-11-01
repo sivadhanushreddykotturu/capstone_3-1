@@ -1,0 +1,13 @@
+{
+  "name": "capstone-triage",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "cd server && npm install && cd ../web && npm install && npm run build",
+    "start": "node start.js"
+  },
+  "engines": {
+    "node": ">=22.9"
+  }
+}

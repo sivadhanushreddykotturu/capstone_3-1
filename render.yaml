@@ -1,33 +1,15 @@
 services:
   - type: web
-    name: triage-api
+    name: capstone_3-1
     runtime: node
     plan: free
-    rootDir: server
-    buildCommand: npm install
+    buildCommand: npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: "22"
       - key: GITHUB_TOKEN
-        sync: false
-      - key: KEEP_ALIVE
-        value: "true"
-      - key: KEEP_ALIVE_UNTIL
-        value: "2026-11-08"
-
-  - type: web
-    name: triage-web
-    runtime: node
-    plan: free
-    rootDir: web
-    buildCommand: npm install && npm run build
-    startCommand: npm start
-    envVars:
-      - key: NODE_VERSION
-        value: "22"
-      - key: API_URL
         sync: false
       - key: KEEP_ALIVE
         value: "true"
